@@ -43,7 +43,7 @@ public class BuscaEmLargura {
             }
         }
         fila.limparFila();
-        calculaDistancias();
+        calculaDistancias();     
     }
     
    /*calcular o histograma das distâncias entre pares de nós. Ou seja, indicar 
@@ -63,8 +63,8 @@ public class BuscaEmLargura {
         */
         for(IDs s : auxComponente){
             for(int i = 0; i < allPaths.size(); i++) 
-                System.out.println(allPaths.get(i).getDistancia() + ": " + allPaths.get(i).getQuantPares());
-            System.out.println("");
+//                System.out.println(allPaths.get(i).getDistancia() + ": " + allPaths.get(i).getQuantPares());
+//            System.out.println("");
             this.edgeTo = newEdgeSource(auxComponente, s);  //método que cria um novo EdgeTo com 'source' no id atual
         
             //adicionando a distância entra cada dois vértices não computados do grafo na lista de distâncias  
@@ -93,7 +93,7 @@ public class BuscaEmLargura {
                 }
             }
         }    
-        for(DistEntreNos d : allPaths) System.out.println(d.getDistancia() + ": " + d.getQuantPares());
+        
         return allPaths;
     }
     
@@ -158,6 +158,11 @@ public class BuscaEmLargura {
         return edgeTo;
     }
 
+    public List<DistEntreNos> getAllPaths() {
+        return allPaths;
+    }
+
+    
    /* retorna o tamanho que deve conter o método toEdge 
     * para que não haja estouro de array, já que os índices
     * são os ids dos vértices

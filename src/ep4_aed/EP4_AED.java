@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Scanner;
 import services.BuscaEmLargura;
 import entities.IDs;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import services.DistEntreNos;
 
 public class EP4_AED {
     
@@ -62,61 +65,39 @@ public class EP4_AED {
             
             //componente conexa começando do meu 1° elemento 
             BuscaEmLargura BL = new BuscaEmLargura(IDList, IDList.get(0));
-            List<IDs> componenteGigante = new ArrayList<>();
-            componenteGigante.addAll(BL.getComponente());
+            List<DistEntreNos> distancias = new ArrayList<>();
+            distancias.addAll(BL.getAllPaths());
             
-/*            IDs[] edgeTo = BL.getEdgeTo();
-            for(int i = 0; i < edgeTo.length; i++) if(edgeTo[i] != null) System.out.println(i + ": " + edgeTo[i].getId() + " ");
-
-            //adicionando todas as componentes conexas na lista de componentes
+            System.out.println("Distancia entre Nos | Frequencia");
+            for(DistEntreNos d : distancias) System.out.println(d.getDistancia() + ": " + d.getQuantPares());
+            
+            //descobrindo qual é a componente gigante e fazendo a lista de distâncias entre vértices recebê-la
             for(IDs ids : IDList){
                 if(!ids.getVisitado()){
-                    compo = new BuscaEmProfundidade(IDList, ids);
-                    List<IDs> auxCompo1 = new ArrayList<>();
-                    auxCompo1.addAll(compo.getComponente());
-                    componentes.add(auxCompo1);
-                    compo.closeComponente();
+                    try{
+                        BuscaEmLargura otherComp = new BuscaEmLargura(IDList, ids);
+                        if(otherComp.getComponente().size() > BL.getComponente().size()){
+                            distancias.clear();
+                            distancias.addAll(otherComp.getAllPaths());
+                        }
+                    //ignorando possível exceções em casos onde só exista 1 elemento não visitado    
+                    }catch(NullPointerException | IndexOutOfBoundsException e){}
                 }
             }
-            
-            /*percorre todas as componentes conexas e verifica se já existe uma componente com determinado grau na lista
-                de componentes, se existir, apenas incrementa 1 no n° de componentes com aquele grau, se não, cria-se
-                uma nova distribuição com esse novo tamanho
-            
-            for(List Lc : componentes){     
-                int tamList = Lc.size();
-                boolean tamExist = false;
-                for(DistrGrausComponentes dg : tamComponentes){
-                    if(dg.getGrauComponente() == tamList){
-                        dg.incrementaQuantComponentes();
-                        tamExist = true;
-                        break;
-                    }
-                }
-                if(!tamExist) tamComponentes.add(new DistrGrausComponentes(tamList));
-            }
-            int contEnc = 0;
-            
-            //contando todos os encontros existentes 
-            for(DistrGrausComponentes d : tamComponentes) contEnc += d.getQuantidadeEncontros()*d.getGrauComponente();
-            
-            System.out.println("Quantidade de Encontros: "+contEnc);
 
             System.out.print("Informe o caminho de saída: ");
             try(BufferedWriter bw = new BufferedWriter(new FileWriter(sc.nextLine()))){
-                bw.write("Quantidade de Encontros: " + contEnc);
-                bw.newLine();
-                bw.write("Grau da componente,Frequencia do grau");
+                bw.write("Distancia entre Nos,Frequencia");
                 bw.newLine();
                 
-                for(DistrGrausComponentes d : tamComponentes){ 
-                    bw.write(d.getGrauComponente() + "," + d.getQuantidadeEncontros());
+                for(DistEntreNos d : distancias){
+                    bw.write(d.getDistancia() + "," + d.getQuantPares());
                     bw.newLine();
                 }
                 
                 bw.close();
             }
-*/        }catch (IOException e){
+        }catch (IOException e){
             e.getMessage();
         }
         finally{
@@ -124,5 +105,7 @@ public class EP4_AED {
         }
     }
     //C:\\Users\\marco\\Desktop\\OD_graph.txt
-    //C:\\Users\\marco\\Desktop\\out\\summary5.cvs  
+    //C:\\Users\\marco\\Desktop\\gigante2.txt
+    //C:\\Users\\marco\\Desktop\\out\\summary6.cvs
+    //C:\\Users\\marco\\Desktop\\auxEP4.txt
 }
